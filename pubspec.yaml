@@ -1,7 +1,7 @@
 name: simple_shared_pref
 description: helper package for easily access to shared preference
 homepage: https://github.com/georgesamirmansour/simple_shared_pref
-version: 1.0.1
+version: 1.0.2
 
 environment:
   sdk: ">=2.13.0 <3.0.0"

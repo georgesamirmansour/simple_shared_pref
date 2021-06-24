@@ -4,8 +4,7 @@ import 'package:simple_shared_pref/simple_shared_pref.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SimpleSharedPref simpleSharedPref = SimpleSharedPref();
-  await simpleSharedPref.init();
+  await SimpleSharedPref().init();
   runApp(MyApp());
 }
 

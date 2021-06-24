@@ -3,8 +3,15 @@
 helper package for easily access to shared preference
 
 ## Getting Started
+Make sure writing this inside main
+```groovy
 
+  WidgetsFlutterBinding.ensureInitialized();
+  await SimpleSharedPref().init();
+
+```
 Fast and easy use for it create enum file and use it's values as keys
+
 Example
 ```groovy
 
