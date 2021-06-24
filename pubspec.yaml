@@ -1,5 +1,6 @@
 name: simple_shared_pref
-description: helper package for easily access to shared preference
+description: helper package for easily access to shared preference with set, get, or conatin methods.
+
 homepage: https://github.com/georgesamirmansour/simple_shared_pref
 version: 1.0.2
 

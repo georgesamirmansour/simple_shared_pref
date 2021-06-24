@@ -34,8 +34,7 @@ class SimpleSharedPref {
 
   String? getString({required key}) {
     try {
-      if (contain(key: key))
-        return pref!.getString(_getLastStringOfEnum(key));
+      if (contain(key: key)) return pref!.getString(_getLastStringOfEnum(key));
     } catch (e) {
       _logExceptionByDeveloper(
           _className, 'Error while getting string from shared: ',
@@ -46,8 +45,7 @@ class SimpleSharedPref {
 
   double? getDouble({required key}) {
     try {
-      if (contain(key: key))
-        return pref!.getDouble(_getLastStringOfEnum(key));
+      if (contain(key: key)) return pref!.getDouble(_getLastStringOfEnum(key));
     } catch (e) {
       _logExceptionByDeveloper(
           _className, 'Error while getting double from shared: ',
@@ -58,8 +56,7 @@ class SimpleSharedPref {
 
   bool? getBool({required key}) {
     try {
-      if (contain(key: key))
-        return pref!.getBool(_getLastStringOfEnum(key));
+      if (contain(key: key)) return pref!.getBool(_getLastStringOfEnum(key));
     } catch (e) {
       _logExceptionByDeveloper(
           _className, 'Error while getting bool from shared: ',
