@@ -14,7 +14,7 @@ enum SharedPrefEnum{
 
 ```
 
-Methods to set
+Set Methods
 Example
 ```groovy
 
@@ -33,7 +33,7 @@ Example
 
 ```
 
-Methods to get
+Get Methods
 Example
 ```groovy
 
@@ -45,7 +45,7 @@ Example
 
 ```
 
-Methods others methods
+Others Methods
 Example
 ```groovy
 
