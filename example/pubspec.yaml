@@ -1,0 +1,20 @@
+name: example
+description: example project for shared pref.
+
+version: 1.0.0
+
+environment:
+  sdk: ">=2.13.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  simple_shared_pref:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
