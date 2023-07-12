@@ -1,62 +1,105 @@
-# simple_shared_pref
+# SimpleSharedPref
 
-helper package for easily access to shared preference
+SimpleSharedPref is a Flutter package that provides easy access to shared preferences. 
+It follows the singleton design pattern, allowing you to conveniently store and retrieve 
+data in shared preferences. It also supports optional encryption and decryption of sensitive data using the `CryptoModule` class.
 
-## Getting Started
-Make sure writing this inside main
+## Installation
+
+Add the following dependency to your `pubspec.yaml` file:
+
+```yaml
+dependencies:
+  simple_shared_pref: ^2.0.0
+
+## Usage
+
+Import the package and the SimpleSharedPref class in your Dart file:
+
 ```groovy
-
-  WidgetsFlutterBinding.ensureInitialized();
-  await SimpleSharedPref().init();
-
+import 'package:simple_shared_pref/simple_shared_pref.dart';
 ```
-Fast and easy use for it create enum file and use it's values as keys
 
-Example
+Create an instance of SimpleSharedPref:
+
 ```groovy
+SimpleSharedPref sharedPref = SimpleSharedPref();
+```
 
-enum SharedPrefEnum{
-  name, id, selected, price, namesList
+Initialize the shared preferences by calling the init method.
+It's recommended to do this in the main function or at the start of your application:
+
+```groovy
+void main()
+
+async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await sharedPref.init();
+    runApp(MyApp());
 }
-
 ```
 
-Set Methods
-Example
+# Storing and Retrieving Values
+
+You can store and retrieve various types of values in shared preferences:
+
+```groovy
+// Store an integer value
+sharedPref.setValue < int > ('counter', 10 );
+
+// Retrieve the integer value
+int ? counterValue = sharedPref.getValue < int > ('counter');
+
+// Store a string value
+sharedPref.setValue <String> ('username', 'JohnDoe' );
+
+// Retrieve the string value
+String ? username = sharedPref.getValue <String> ('username');
+
+// Store a boolean value
+sharedPref.setValue <bool> ('isLoggedIn', true );
+
+// Retrieve the boolean value
+bool ? isLoggedIn = sharedPref.getValue <bool> ('isLoggedIn');
+```
+
+# Removing a Value
+
+To remove a value from shared preferences, you can use the removeValue method:
+
 ```groovy
 
-    await SimpleSharedPref()
-        .setInt(value: 2, key: SharedPrefEnum.id.toString());
-    await SimpleSharedPref().setDouble(
-        value: 2.2,
-        key: SharedPrefEnum.price.toString());
-    await SimpleSharedPref()
-        .setBool(value: true, key: SharedPrefEnum.selected.toString());
-    await SimpleSharedPref()
-        .setString(value: 'Product', key: SharedPrefEnum.name.toString());
-    await SimpleSharedPref().setStringList(
-        value: ['Product1', 'Product2', 'Product3'],
-        key: SharedPrefEnum.namesList.toString());
-
+sharedPref.removeValue('counter');
 ```
 
-Get Methods
-Example
+# Checking if a Value Exists
+
+You can check if a value exists in shared preferences using the containsKey method:
+
 ```groovy
 
-  SimpleSharedPref().getInt(key: SharedPrefEnum.id.toString())!.toString();
-  SimpleSharedPref().getDouble(key: SharedPrefEnum.price.toString())!.toString();
-  SimpleSharedPref().getString(key: SharedPrefEnum.name.toString())!.toString();
-  SimpleSharedPref().getBool(key: SharedPrefEnum.selected.toString())!.toString();
-  SimpleSharedPref().getStringList(key: SharedPrefEnum.namesList.toString())!.toString();
+bool isUsernameStored = sharedPref.containsKey('username');
 
 ```
 
-Others Methods
-Example
+# Clearing Shared Preferences
+
+To clear all values stored in shared preferences, use the clear method:
+
 ```groovy
 
-  SimpleSharedPref().contain(key: SharedPrefEnum.namesList.toString());
-  SimpleSharedPref().pref // return shared preference object 
+sharedPref.clear();
 
 ```
+
+# Contributing
+
+Contributions are welcome! If you encounter any issues or have suggestions for improvements,
+please create an issue or submit a pull request on
+the [GitHub repository](https://github.com/georgesamirmansour/simple_shared_pref) .
+
+# License
+
+This package is released under the [MIT License](https://opensource.org/license/mit/). See
+the [LICENSE](https://github.com/georgesamirmansour/simple_shared_pref/blob/master/LICENSE) file for more
+details.

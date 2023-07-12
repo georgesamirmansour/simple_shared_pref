@@ -4,3 +4,7 @@
 * fix readme.
 ## [1.0.2]
 * fix readme.
+
+## [2.0.0]
+* update dependencies.
+* added encrypt and decrypt module

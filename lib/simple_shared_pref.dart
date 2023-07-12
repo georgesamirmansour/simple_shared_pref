@@ -1,156 +1,158 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer' as developer;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'crypto_module.dart';
+
+/// The `SimpleSharedPref` class provides easy access to shared preferences in Flutter.
+/// It follows the singleton design pattern.
 class SimpleSharedPref {
-  static final SimpleSharedPref _sharedPrefHelper =
-      SimpleSharedPref._internal();
-  static SharedPreferences? _instance;
-  final String _className = 'SharedPreferenceHelper: ';
+  static final SimpleSharedPref _instance = SimpleSharedPref._internal();
+  static SharedPreferences? _preferences;
+  static late final CryptoModule? _cryptoModule;
 
   SimpleSharedPref._internal();
 
+  /// Creates an instance of the `SimpleSharedPref` class.
+  ///
+  /// The `SimpleSharedPref` class follows the singleton design pattern, ensuring that only one instance
+  /// of the class is created throughout the application.
   factory SimpleSharedPref() {
-    return _sharedPrefHelper;
+    _cryptoModule = CryptoModule();
+    return _instance;
   }
 
-  init() async {
-    if (_instance == null) _instance = await SharedPreferences.getInstance();
+  /// Initializes the shared preferences instance.
+  ///
+  /// The [allowEncryptAndDecrypt] parameter indicates whether encryption and decryption should be allowed with shared preferences.
+  /// By default, encryption and decryption are enabled.
+  Future<void> init({bool allowEncryptAndDecrypt = true}) async {
+    _preferences ??= await SharedPreferences.getInstance();
+    if (allowEncryptAndDecrypt) {
+      _cryptoModule = CryptoModule();
+    }
   }
 
-  SharedPreferences? get pref => _instance;
-
-  int? getInt({required String key}) {
+  /// Retrieves a value from the shared preferences based on the provided [key].
+  ///
+  /// Returns the value if it exists, otherwise returns null.
+  ///
+  /// The [key] parameter represents the key associated with the value to retrieve from shared preferences.
+  ///
+  /// Example:
+  /// ```dart
+  /// String? username = SimpleSharedPref().getValue<String>('username');
+  /// ```
+  T? getValue<T>({required dynamic key}) {
     try {
-      if (contain(key: key)) {
-        return pref!.getInt(_getLastStringOfEnum(key));
+      if (_preferences!.containsKey(key.toString())) {
+        var value = _preferences!.get(key.toString());
+        if (_cryptoModule != null && value is String) {
+          return _cryptoModule!.decryptData(value, key.toString()) as T?;
+        }
+        return value as T?;
       }
     } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while getting int from shared: ',
+      _logException('Error while getting value from shared preferences',
           error: e);
     }
     return null;
   }
 
-  String? getString({required key}) {
+  /// Sets a value in the shared preferences with the provided [key] and [value].
+  ///
+  /// Returns a future indicating whether the operation was successful or not.
+  ///
+  /// The [key] parameter represents the key associated with the value to store in shared preferences.
+  /// The [value] parameter represents the value to be stored.
+  ///
+  /// Example:
+  /// ```dart
+  /// await SimpleSharedPref().setValue('username', 'JohnDoe');
+  /// ```
+  Future<bool> setValue<T>({required dynamic key, required T value}) {
     try {
-      if (contain(key: key)) return pref!.getString(_getLastStringOfEnum(key));
+      if (_cryptoModule != null && value is String) {
+        value = _cryptoModule!.encryptData(value, key.toString()) as T;
+        return _preferences!.setString(key.toString(), value as String);
+      } else if (value is String) {
+        return _preferences!.setString(key.toString(), value);
+      } else if (value is int) {
+        return _preferences!.setInt(key.toString(), value);
+      } else if (value is bool) {
+        return _preferences!.setBool(key.toString(), value);
+      } else if (value is double) {
+        return _preferences!.setDouble(key.toString(), value);
+      } else {
+        return _preferences!
+            .setStringList(key.toString(), value as List<String>);
+      }
     } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while getting string from shared: ',
-          error: e);
-    }
-    return null;
-  }
-
-  double? getDouble({required key}) {
-    try {
-      if (contain(key: key)) return pref!.getDouble(_getLastStringOfEnum(key));
-    } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while getting double from shared: ',
-          error: e);
-    }
-    return null;
-  }
-
-  bool? getBool({required key}) {
-    try {
-      if (contain(key: key)) return pref!.getBool(_getLastStringOfEnum(key));
-    } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while getting bool from shared: ',
-          error: e);
-    }
-    return null;
-  }
-
-  List<String>? getStringList({required key}) {
-    try {
-      if (contain(key: key))
-        return pref!.getStringList(_getLastStringOfEnum(key));
-    } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while getting string list from shared: ',
-          error: e);
-    }
-    return null;
-  }
-
-  Future<bool> setInt({required int value, required String key}) {
-    try {
-      return pref!.setInt(_getLastStringOfEnum(key), value);
-    } catch (e) {
-      _logExceptionByDeveloper(_className, 'Error while set int to shared: ',
+      _logException('Error while setting value to shared preferences',
           error: e);
       return Future.value(false);
     }
   }
 
-  Future<bool> setBool({required bool value, required String key}) {
+  /// Checks if a value exists in the shared preferences based on the provided [key].
+  ///
+  /// Returns true if the value exists, otherwise returns false.
+  ///
+  /// The [key] parameter represents the key associated with the value to check in shared preferences.
+  ///
+  /// Example:
+  /// ```dart
+  /// bool exists = SimpleSharedPref().containsKey('username');
+  /// ```
+  bool containsKey(dynamic key) {
     try {
-      return pref!.setBool(_getLastStringOfEnum(key), value);
+      return _preferences!.containsKey(key.toString());
     } catch (e) {
-      _logExceptionByDeveloper(_className, 'Error while set bool to shared: ',
-          error: e);
-      return Future.value(false);
-    }
-  }
-
-  Future<bool> setDouble({required double value, required String key}) {
-    try {
-      return pref!.setDouble(_getLastStringOfEnum(key), value);
-    } catch (e) {
-      _logExceptionByDeveloper(_className, 'Error while set double to shared: ',
-          error: e);
-      return Future.value(false);
-    }
-  }
-
-  Future<bool> setString({required String value, required String key}) {
-    Future<bool> _setStringFuture = Future.value(false);
-    try {
-      _setStringFuture = pref!.setString(_getLastStringOfEnum(key), value);
-    } catch (e) {
-      _logExceptionByDeveloper(_className, 'Error while set string to shared: ',
-          error: e);
-    }
-    return _setStringFuture;
-  }
-
-  Future<bool> setStringList(
-      {required List<String> value, required String key}) {
-    try {
-      return pref!.setStringList(_getLastStringOfEnum(key), value);
-    } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while set string list to shared: ',
-          error: e);
-      return Future.value(false);
-    }
-  }
-
-  bool contain({required String key}) {
-    try {
-      return pref!.containsKey(_getLastStringOfEnum(key));
-    } catch (e) {
-      _logExceptionByDeveloper(
-          _className, 'Error while check exist in shared: ',
+      _logException('Error while checking existence in shared preferences',
           error: e);
     }
     return false;
   }
 
-  String _getLastStringOfEnum(String key) {
+  /// Removes a value from the shared preferences based on the provided [key].
+  ///
+  /// Returns a future indicating whether the operation was successful or not.
+  ///
+  /// The [key] parameter represents the key associated with the value to remove from shared preferences.
+  ///
+  /// Example:
+  /// ```dart
+  /// await SimpleSharedPref().removeValue('username');
+  /// ```
+  Future<bool> removeValue(dynamic key) {
     try {
-      return key.toString().split('.').last;
+      return _preferences!.remove(key.toString());
     } catch (e) {
-      return key;
+      _logException('Error while removing value from shared preferences',
+          error: e);
+      return Future.value(false);
     }
   }
 
-  void _logExceptionByDeveloper(String name, String message,
-      {dynamic error, StackTrace? stackTrace}) {
-    developer.log(message, name: name, error: error, stackTrace: stackTrace);
+  /// Clears all values in the shared preferences.
+  ///
+  /// Returns a future indicating whether the operation was successful or not.
+  ///
+  /// Example:
+  /// ```dart
+  /// await SimpleSharedPref().clear();
+  /// ```
+  Future<bool> clear() {
+    try {
+      return _preferences!.clear();
+    } catch (e) {
+      _logException('Error while clearing shared preferences', error: e);
+      return Future.value(false);
+    }
+  }
+
+  /// Logs exceptions using the developer logger.
+  void _logException(String message, {dynamic error, StackTrace? stackTrace}) {
+    developer.log(message, error: error, stackTrace: stackTrace);
   }
 }

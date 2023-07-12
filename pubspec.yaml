@@ -2,15 +2,16 @@ name: simple_shared_pref
 description: helper package for easily access to shared preference with set, get, or conatin methods.
 
 homepage: https://github.com/georgesamirmansour/simple_shared_pref
-version: 1.0.2
+version: 2.0.0
 
 environment:
-  sdk: ">=2.13.0 <3.0.0"
+  sdk: '>=3.0.3 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.6
+  shared_preferences: ^2.2.0
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:

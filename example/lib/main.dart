@@ -4,7 +4,7 @@ import 'package:simple_shared_pref/simple_shared_pref.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SimpleSharedPref().init();
+  await SimpleSharedPref().init(allowEncryptAndDecrypt: true);
   runApp(MyApp());
 }
 
@@ -21,18 +21,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void setDataToShared() async {
+    await SimpleSharedPref().setValue<int>(value: 2, key: SharedPrefEnum.id);
     await SimpleSharedPref()
-        .setInt(value: 2, key: SharedPrefEnum.id.toString());
-    await SimpleSharedPref().setDouble(
-        value: 2.2,
-        key: SharedPrefEnum.price.toString());
+        .setValue<double>(value: 2.2, key: SharedPrefEnum.price);
     await SimpleSharedPref()
-        .setBool(value: true, key: SharedPrefEnum.selected.toString());
+        .setValue<bool>(value: true, key: SharedPrefEnum.selected);
     await SimpleSharedPref()
-        .setString(value: 'Product', key: SharedPrefEnum.name.toString());
-    await SimpleSharedPref().setStringList(
+        .setValue<String>(value: 'Product', key: SharedPrefEnum.name);
+    await SimpleSharedPref().setValue<List<String>>(
         value: ['Product1', 'Product2', 'Product3'],
-        key: SharedPrefEnum.namesList.toString());
+        key: SharedPrefEnum.namesList);
   }
 
   @override
@@ -72,17 +70,19 @@ class _MyHomePageState extends State<MyHomePage> {
               shrinkWrap: true,
               children: [
                 Text(
-                    'id: ${SimpleSharedPref().getInt(key: SharedPrefEnum.id.toString())!.toString()}'),
+                    'id: ${SimpleSharedPref().getValue<int>(key: SharedPrefEnum.id).toString()}'),
                 Text(
-                    'price: ${SimpleSharedPref().getDouble(key: SharedPrefEnum.price.toString())!.toString()}'),
+                    'price: ${SimpleSharedPref().getValue<double>(key: SharedPrefEnum.price).toString()}'),
                 Text(
-                    'product: ${SimpleSharedPref().getString(key: SharedPrefEnum.name.toString())!.toString()}'),
+                    'product: ${SimpleSharedPref().getValue<String>(key: SharedPrefEnum.name).toString()}'),
                 Text(
-                    'selected: ${SimpleSharedPref().getBool(key: SharedPrefEnum.selected.toString())!.toString()}'),
+                    'selected: ${SimpleSharedPref().getValue<bool>(key: SharedPrefEnum.selected).toString()}'),
                 Text(SimpleSharedPref()
-                    .getStringList(key: SharedPrefEnum.namesList.toString())!
+                    .getValue<List<String>>(key: SharedPrefEnum.namesList)
                     .toString()),
-                Text(SimpleSharedPref().contain(key: SharedPrefEnum.namesList.toString()).toString()),
+                Text(SimpleSharedPref()
+                    .getValue<List<String>>(key: SharedPrefEnum.namesList)
+                    .toString()),
               ],
             )
           ],
