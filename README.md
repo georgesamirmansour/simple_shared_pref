@@ -11,7 +11,7 @@ Add the following dependency to your `pubspec.yaml` file:
 ```yaml
 dependencies:
   simple_shared_pref: ^2.0.0
-
+```
 ## Usage
 
 Import the package and the SimpleSharedPref class in your Dart file:
